@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wheel Of Fortune</title>
+  <link rel="stylesheet" href="css/typo/typo.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="typo">
+    <div id="lucky_wheel" class="outer-circle">
+      <div class="second-circle">
+        <div class="circle-container">
+          <canvas class="circle-canvas" width="500px" height="500px"></canvas>
+        </div>
+        <a class="spin-btn" href="javascript:;">Xoay</a>
+      </div>
+      <img src="./images/needle.svg" class="needle"></img>
+      </section>
+    </div>
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="js/script.js"></script>
+    <script>
+      var isPercentage = true;
+      var prizes = [
+        {
+          text: "Xém VUI",
+          img: "images/3.png",
+          number: 1, //  number of gifts
+          percent: 0.6 // 60%
+        },
+        {
+          text: "99 VUI",
+          img: "images/4.png",
+          number: 1,
+          percent: 0.01 // 1%
+        },
+        {
+          text: "10 VUI",
+          img: "images/4.png",
+          number: 1,
+          percent: 0.1 // 10%
+        },
+        {
+          text: "Xém VUI",
+          img: "images/3.png",
+          number: 1,
+          percent: 0.6 // 60%
+        },
+        {
+          text: "9 VUI",
+          img: "images/2.png",
+          number: 1,
+          percent: 0.05 // 5%
+        },
+        {
+          text: "1 VUI",
+          img: "images/1.png",
+          number: 1,
+          percent: 0.24 // 24%
+        },
+      ];
+      document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+          luckyWheel.init({
+            id: "lucky_wheel",
+            config: function (callback) {
+              callback &&
+                callback(prizes);
+            },
+            mode: "both",
+            getPrize: function (callback) {
+              var rand = randomIndex(prizes);
+              var chance = rand;
+              console.log({ chance })
+              callback && callback([rand, chance]);
+            },
+            gotBack: function (data) {
+              if (data == null) {
+                Swal.fire(
+                  'Chương trình kết thúc',
+                  'Đã hết phần thưởng',
+                  'error'
+                )
+              } else if (data == 'Chúc bạn may mắn lần sau') {
+                Swal.fire(
+                  'Bạn không trúng thưởng',
+                  data,
+                  'error'
+                )
+              } else {
+                Swal.fire(
+                  'Bạn đã trúng',
+                  data,
+                  'success'
+                )
+              }
+            }
+          });
+        },
+        false
+      );
+      function randomIndex(prizes) {
+        if (isPercentage) {
+          var counter = 1;
+          for (let i = 0; i < prizes.length; i++) {
+            if (prizes[i].number == 0) {
+              counter++
+            }
+          }
+          if (counter == prizes.length) {
+            return null
+          }
+          let prizeIndex = Math.floor(Math.random() * prizes.length);
+          if (prizes[prizeIndex].number != 0) {
+            prizes[prizeIndex].number = prizes[prizeIndex].number - 1
+            return prizeIndex
+          } else {
+            return randomIndex(prizes)
+          }
+        } else {
+          var counter = 0;
+          for (let i = 0; i < prizes.length; i++) {
+            if (prizes[i].number == 0) {
+              counter++
+            }
+          }
+          if (counter == prizes.length) {
+            return null
+          }
+          var rand = (Math.random() * (prizes.length)) >>> 0;
+          if (prizes[rand].number != 0) {
+            prizes[rand].number = prizes[rand].number - 1
+            return rand
+          } else {
+            return randomIndex(prizes)
+          }
+        }
+      }
+    </script>
+</body>
+
+</html>
